@@ -5,7 +5,13 @@ const fs = require('fs');
 
 // TODO : use lightwallet module to create random mnemonic code
 router.post('/newMnemonic', async(req,res) => {
-
+    let mnemonic;
+    try {
+        mnemonic = lightwallet.keystore.generateRandomSeed();
+        res.json({mnemonic});
+    } catch(err) {
+        console.log(err);
+    }
 });
 
 
