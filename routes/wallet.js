@@ -17,7 +17,30 @@ router.post('/newMnemonic', async(req,res) => {
 
 // TODO : use mnemonic code and password to create keystore & address
 router.post('/newWallet', async(req, res) => {
+    let password = req.body.password
+    let mnemonic = req.body.mnemonic;
 
+    try {
+      lightwallet.keystore.createVault(
+        {
+          password: password, 
+          seedPhrase: mnemonic,
+          hdPathString: "m/0'/0'/0'"
+        },
+        function (err, ks) {
+            ks.keyFromPassword(password, function (err, pwDerivedKey) {
+            ks.generateNewAddress(pwDerivedKey, 1);
+            
+            let address = (ks.getAddresses()).toString();
+            let keystore = ks.serialize();
+
+            res.json({ keystore: keystore, address: address });
+          });
+        }
+      );
+    } catch (exception) { 
+      console.log("NewWallet ==>>>> " + exception);
+    }
 });
 
 module.exports = router;
