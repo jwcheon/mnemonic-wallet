@@ -34,7 +34,13 @@ router.post('/newWallet', async(req, res) => {
             let address = (ks.getAddresses()).toString();
             let keystore = ks.serialize();
 
-            res.json({ keystore: keystore, address: address });
+            fs.writeFile('wallet.json',keystore,function(err,data){
+                if(err) {
+                    res.json({code:999,message:"Failed"});
+                } else {
+                    res.json({code:1,message:"Success"});
+                }
+            });
           });
         }
       );
